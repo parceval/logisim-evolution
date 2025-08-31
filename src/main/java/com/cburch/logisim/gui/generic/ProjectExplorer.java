@@ -69,7 +69,7 @@ public class ProjectExplorer extends JTree implements LocaleListener {
     super();
     this.proj = proj;
 
-    setModel(new FilteredProjectExplorerModel(proj, this, showMouseTools));
+    setModel(new ProjectExplorerModel(proj, this, showMouseTools));
     setRootVisible(true);
     addMouseListener(myListener);
     ToolTipManager.sharedInstance().registerComponent(this);

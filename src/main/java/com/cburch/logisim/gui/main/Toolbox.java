@@ -10,7 +10,7 @@
 package com.cburch.logisim.gui.main;
 
 import com.cburch.draw.toolbar.Toolbar;
-import com.cburch.logisim.gui.generic.FilteredProjectExplorerModel;
+import com.cburch.logisim.gui.generic.ProjectExplorerModel;
 import com.cburch.logisim.gui.generic.ProjectExplorer;
 import com.cburch.logisim.gui.menu.MenuListener;
 import com.cburch.logisim.proj.Project;
@@ -52,7 +52,7 @@ class Toolbox extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         searchField.setText("");
-        ((FilteredProjectExplorerModel) toolbox.getModel()).setFilter(searchField.getText());
+        ((ProjectExplorerModel) toolbox.getModel()).setFilter(searchField.getText());
       }
     });
 
@@ -60,7 +60,7 @@ class Toolbox extends JPanel {
     searchButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        ((FilteredProjectExplorerModel) toolbox.getModel()).setFilter(searchField.getText());
+        ((ProjectExplorerModel) toolbox.getModel()).setFilter(searchField.getText());
       }
     });
 
@@ -68,7 +68,7 @@ class Toolbox extends JPanel {
     searchField.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        ((FilteredProjectExplorerModel) toolbox.getModel()).setFilter(searchField.getText());
+        ((ProjectExplorerModel) toolbox.getModel()).setFilter(searchField.getText());
       }
     });
 

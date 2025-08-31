@@ -24,25 +24,75 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-class ProjectExplorerModel extends DefaultTreeModel implements ProjectListener {
+public class ProjectExplorerModel extends DefaultTreeModel implements ProjectListener {
 
   private static final long serialVersionUID = 1L;
   private final JTree uiElement;
   private Project proj;
   private final boolean showMouseTools;
+  private String filter = "";
 
   ProjectExplorerModel(Project proj, JTree gui, boolean showMouseTools) {
     super(null);
     this.proj = proj;
+    this.filter = "";
     this.showMouseTools = showMouseTools;
     setRoot(new ProjectExplorerLibraryNode(this, proj.getLogisimFile(), gui, showMouseTools));
     proj.addProjectListener(this);
     uiElement = gui;
   }
 
+  public void setFilter(String filter) {
+    this.filter = filter.toLowerCase();
+    // This will reload the tree and apply the filter
+    reload();
+  }
+
+  @Override
+  public Object getChild(Object parent, int index) {
+    int count = 0;
+    for (int i = 0; i < super.getChildCount(parent); i++) {
+      Object child = super.getChild(parent, i);
+      if (matches(child)) {
+        if (count == index) {
+          return child;
+        }
+        count++;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public int getChildCount(Object parent) {
+    int count = 0;
+    for (int i = 0; i < super.getChildCount(parent); i++) {
+      if (matches(super.getChild(parent, i))) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  // This is the core filtering logic
+  private boolean matches(Object node) {
+    String nodeText = node.toString().toLowerCase();
+    if (nodeText.contains(filter)) {
+      return true;
+    }
+
+    for (int i = 0; i < super.getChildCount(node); i++) {
+      if (matches(super.getChild(node, i))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Node<Tool> findTool(Tool tool) {
     final var root = (Node<?>) getRoot();
-    if (root == null || tool == null) return null;
+    if (root == null || tool == null)
+      return null;
     final var en = root.depthFirstEnumeration();
     while (en.hasMoreElements()) {
       final var node = (Node<?>) en.nextElement();
@@ -133,9 +183,9 @@ class ProjectExplorerModel extends DefaultTreeModel implements ProjectListener {
       if (parent == null) {
         model.fireTreeNodesChanged(this, null, null, null);
       } else {
-        final var indices = new int[] {parent.getIndex(this)};
-        final var items = new Object[] {this.getUserObject()};
-        model.fireTreeNodesChanged(this, parent.getPath(), indices, items);
+        final var indices = new int[] { parent.getIndex(this) };
+        final var items = new Object[] { this.getUserObject() };
+        // model.fireTreeNodesChanged(this, parent.getPath(), indices, items);
       }
     }
 
